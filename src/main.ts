@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AddressInfo } from 'net';
+import { Logger } from '@nestjs/common';
 
 const OpenApiReferenceEndpoint: string = '/api';
 
@@ -11,20 +12,23 @@ const isAddressInfo = (address: unknown): address is AddressInfo => {
   return typeof address === "object" && address !== null && "port" in address;
 };
 
+const _logger = new Logger('Bootstrap');
+
 const logHttpServerInformation = (app: NestExpressApplication) => {
 
     const addressInfo = app.getHttpServer().address();
 
     if (isAddressInfo(addressInfo) === false) {
+      _logger.warn('Unable to obtain server address information');
       return;
     }
 
     const { address, port } = addressInfo;
 
-    const baseUrl = `http://${address === '::' ? 'localhost' : address}:${port}`;
+    const baseAddress = `http://${address === '::' ? 'localhost' : address}:${port}`;
 
-    console.log('HTTP Server listening on port %d', port);
-    console.log('API Reference (OpenAPI): %s', `${baseUrl}${OpenApiReferenceEndpoint}`);
+    _logger.log(`HTTP server listening on port ${port}`);
+    _logger.log(`API Reference (OpenAPI): ${baseAddress}${OpenApiReferenceEndpoint}`);
 };
 
 async function bootstrap() {
@@ -41,7 +45,6 @@ async function bootstrap() {
     apiReference({
       content: openApiDocument,
       title: 'Movies API Reference',
-      favicon: '🍿',
       defaultHttpClient: {
         targetKey: 'shell',
         clientKey: 'curl',
