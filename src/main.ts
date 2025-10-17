@@ -5,30 +5,36 @@ import { apiReference } from '@scalar/nestjs-api-reference';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AddressInfo } from 'net';
 import { Logger } from '@nestjs/common';
-
-const OpenApiReferenceEndpoint: string = '/api';
+import process from 'process';
+import { Defaults, Routes } from './constants/constants';
 
 const isAddressInfo = (address: unknown): address is AddressInfo => {
   return typeof address === "object" && address !== null && "port" in address;
 };
 
-const _logger = new Logger('Bootstrap');
+const logEnvironment = () => {
+  const logger = new Logger('Environment');
 
-const logHttpServerInformation = (app: NestExpressApplication) => {
+  logger.log(`DATASOURCE=${process.env.DATASOURCE || Defaults.DATASOURCE}`);
+};
 
-    const addressInfo = app.getHttpServer().address();
+const logServerInfo = (app: NestExpressApplication) => {
 
-    if (isAddressInfo(addressInfo) === false) {
-      _logger.warn('Unable to obtain server address information');
-      return;
-    }
+  const logger = new Logger('Server');
 
-    const { address, port } = addressInfo;
+  const addressInfo = app.getHttpServer().address();
 
-    const baseAddress = `http://${address === '::' ? 'localhost' : address}:${port}`;
+  if (isAddressInfo(addressInfo) === false) {
+    logger.warn('Unable to obtain server address information');
+    return;
+  }
 
-    _logger.log(`HTTP server listening on port ${port}`);
-    _logger.log(`API Reference (OpenAPI): ${baseAddress}${OpenApiReferenceEndpoint}`);
+  const { address, port } = addressInfo;
+
+  const baseAddress = `http://${address === '::' ? 'localhost' : address}:${port}`;
+
+  logger.log(`HTTP server listening on port ${port}`);
+  logger.log(`API Reference (OpenAPI): ${baseAddress}${Routes.API_REFERENCE}`);
 };
 
 async function bootstrap() {
@@ -41,7 +47,7 @@ async function bootstrap() {
   const openApiDocument = SwaggerModule.createDocument(app, openApiConfig);
 
   app.use(
-    OpenApiReferenceEndpoint,
+    Routes.API_REFERENCE,
     apiReference({
       content: openApiDocument,
       title: 'Movies API Reference',
@@ -52,6 +58,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000, () => logHttpServerInformation(app));
+  await app.listen(process.env.PORT ?? Defaults.PORT, () => {
+    logEnvironment();
+    logServerInfo(app);
+  });
 }
 bootstrap();

@@ -1,17 +1,28 @@
 #!/usr/bin/env bash
 
-CSV="${1:-./db/movies.csv}"
-DB="${2:-./db/movies.sqlite3}"
+CSV_FILE="${1:-./db/movies.csv}"
+DB_FILE="${2:-./db/movies.sqlite3}"
+TABLE_NAME="Movie"
 
-if [[ ! -f "$CSV" ]]; then
-  echo "Arquivo não encontrado: $CSV" >&2
+if [[ ! -f "$CSV_FILE" ]]; then
+  echo "[ERROR]"
+  echo "└── Arquivo CSV não encontrado: $CSV_FILE" >&2
   exit 1
 fi
 
-rm -f "$DB"
+if [[ -f "$DB_FILE" ]]; then
+  echo "[WARN]"
+  echo "├── Base de dados já existe!"
+  echo "└── Removendo arquivo antigo: $DB_FILE"
+  rm -f "$DB_FILE"
+fi
 
-sqlite3 "$DB" <<EOF
-CREATE TABLE Movies (
+echo "[INFO]"
+echo "├── Criando base de dados: $DB_FILE"
+echo "└── Importando dados do arquivo CSV: $CSV_FILE"
+
+sqlite3 "$DB_FILE" <<EOF
+CREATE TABLE "$TABLE_NAME" (
   Id                     INTEGER PRIMARY KEY,
   Title                  TEXT NOT NULL,
   Genre                  TEXT,
@@ -32,7 +43,10 @@ CREATE TABLE Movies (
 );
 
 .mode csv
-.import --skip 1 "$CSV" Movies
+.import --skip 1 "$CSV_FILE" "$TABLE_NAME"
 EOF
 
-echo "CSV importado com sucesso"
+count=$(sqlite3 "$DB_FILE" "SELECT COUNT(*) FROM \"$TABLE_NAME\";")
+echo "[INFO]"
+echo "├── Base de dados criada com sucesso!"
+echo "└── $count registros importados para a tabela \"$TABLE_NAME\""

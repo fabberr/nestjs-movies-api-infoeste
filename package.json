@@ -8,10 +8,10 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start": "DATASOURCE=\"$(realpath ./db/movies.sqlite3)\" nest start",
+    "start:dev": "DATASOURCE=\"$(realpath ./db/movies.sqlite3)\" nest start --watch",
+    "start:debug": "DATASOURCE=\"$(realpath ./db/movies.sqlite3)\" nest start --debug --watch",
+    "start:prod": "DATASOURCE=\"$(realpath ./db/movies.sqlite3)\" node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -24,9 +24,12 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
+    "@nestjs/typeorm": "^11.0.0",
     "@scalar/nestjs-api-reference": "^1.0.5",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
