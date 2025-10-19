@@ -1,4 +1,9 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import * as redis from 'redis';
 import { RedisClientType } from 'redis';
 
@@ -28,15 +33,17 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   /**
    * Recupera um objeto armazenado no Redis pela sua chave.
-   * 
+   *
    * @see https://redis.io/docs/latest/commands/get/
-   * 
+   *
    * @param key Chave do objeto.
    */
   async getObjectAsync<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
 
-    if (value === null) { return null; }
+    if (value === null) {
+      return null;
+    }
 
     return JSON.parse(value) as T;
   }
@@ -44,7 +51,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   /**
    * Armazena um objeto no Redis com a chave especificada. Caso um objeto com
    * a chave especifica já exista, ele será sobrescrito.
-   * 
+   *
    * @see https://redis.io/docs/latest/commands/set/
    *
    * @param key Chave do objeto.
@@ -52,12 +59,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * @param ttlSeconds (Opcional) Tempo de vida (TTL) do objeto, em segundos.
    *        Se não especificao, o objeto será armazenado indefinidamente.
    */
-  async setObjectAsync<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
+  async setObjectAsync<T>(
+    key: string,
+    value: T,
+    ttlSeconds?: number,
+  ): Promise<void> {
     const json = JSON.stringify(value);
 
     if (ttlSeconds && ttlSeconds > 0) {
-      await this.client.set( key, json, {
-        expiration: { type: 'EX', value: ttlSeconds }
+      await this.client.set(key, json, {
+        expiration: { type: 'EX', value: ttlSeconds },
       });
     } else {
       await this.client.set(key, json);
@@ -66,7 +77,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   /**
    * Remove um objeto armazenado no Redis pela sua chave.
-   * 
+   *
    * @see https://redis.io/docs/latest/commands/unlink/
    *
    * @param key Chave do objeto.
