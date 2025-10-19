@@ -5,21 +5,16 @@ import { Defaults, Routes } from 'src/constants/constants';
 
 @Controller(Routes.MOVIES)
 export class MoviesController {
-  constructor(
-    private readonly moviesService: MoviesService
-  ) {}
+  constructor(private readonly moviesService: MoviesService) {}
 
   @Get()
   async findAllAsync(
-    @Query('page', ParseIntPipe)
-    pageNumber?: number,
-
-    @Query('size', ParseIntPipe)
-    pageSize?: number,
+    @Query('page', ParseIntPipe) pageNumber?: number,
+    @Query('size', ParseIntPipe) pageSize?: number,
   ): Promise<Movie[]> {
     return await this.moviesService.findAllAsync(
       pageNumber || Defaults.PAGE_NUMBER,
-      pageSize   || Defaults.PAGE_SIZE
+      pageSize || Defaults.PAGE_SIZE,
     );
   }
 }

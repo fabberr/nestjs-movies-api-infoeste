@@ -5,11 +5,10 @@ import { apiReference } from '@scalar/nestjs-api-reference';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AddressInfo } from 'net';
 import { Logger } from '@nestjs/common';
-import process from 'process';
 import { Defaults, Routes } from './constants/constants';
 
 const isAddressInfo = (address: unknown): address is AddressInfo => {
-  return typeof address === "object" && address !== null && "port" in address;
+  return typeof address === 'object' && address !== null && 'port' in address;
 };
 
 const logEnvironment = () => {
@@ -19,7 +18,6 @@ const logEnvironment = () => {
 };
 
 const logServerInfo = (app: NestExpressApplication) => {
-
   const logger = new Logger('Server');
 
   const addressInfo = app.getHttpServer().address();
