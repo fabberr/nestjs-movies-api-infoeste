@@ -1,6 +1,6 @@
 # Movies API
 
-Aplicação back-end que expõe uma API para consultas de dados analíticos sobre filmes. O projeto tem como objetivo demonstrar conceitos básicos de caching para performance em aplicações back-end.
+API para consultas de dados analíticos sobre filmes. O projeto tem como objetivo demonstrar conceitos básicos de caching para performance em aplicações back-end.
 
 Como fonte de dados, o projeto usa uma versão modificada do dataset "[Movie Dataset for Analytics & Visualization](https://www.kaggle.com/datasets/mjshubham21/movie-dataset-for-analytics-and-visualization)", que contém dados sintéticos de filmes fictícios lançados entre 1950 e 2025.
 
@@ -87,7 +87,7 @@ Para rodar a aplicação em modo de desenvolvimento:
 npm run start:dev
 ```
 
-Este modo reinicia automaticamente a aplicação quando o código fonte for alterado. Para encerrar, pressione `Ctrl + C` no terminal.
+Este modo reinicia automaticamente a aplicação quando o código-fonte for alterado. Para encerrar, pressione `Ctrl + C` no terminal.
 
 Caso todos os passos descritos nos [Pré-Requisitos](#pré-requisitos) tenham sido seguidos corretamente, a aplicação deve gerar uma saída semelhante à exibida abaixo no console durante sua inicialização:
 
