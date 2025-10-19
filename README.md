@@ -1,16 +1,14 @@
 # Movies API
 
-Aplicação back-end desenvolvida com o framework [NestJS](https://nestjs.com) que expõe uma API para informações sobre filmes. O projeto tem como objetivo demonstrar conceitos básicos de caching para performance em aplicações back-end, utilizando o Redis como armazenamento.
+Aplicação back-end que expõe uma API para consultas de dados analíticos sobre filmes. O projeto tem como objetivo demonstrar conceitos básicos de caching para performance em aplicações back-end.
 
-Como fonte de dados, o projeto usa uma versão modificada do dataset "[Movie Dataset for Analytics & Visualization](https://www.kaggle.com/datasets/mjshubham21/movie-dataset-for-analytics-and-visualization)", que contém dados sintéticos sobre filmes fictícios lançados entre 1950 e 2025.
+Como fonte de dados, o projeto usa uma versão modificada do dataset "[Movie Dataset for Analytics & Visualization](https://www.kaggle.com/datasets/mjshubham21/movie-dataset-for-analytics-and-visualization)", que contém dados sintéticos de filmes fictícios lançados entre 1950 e 2025.
 
-O armazenamento primário é feito em uma base de dados SQL. O SGBD escolhido foi o SQLite; por ser leve, armazenar os dados localmente (`./db/movies.sqlite3`) e de fácil uso para desenvolvimento e testes.
-
-A estrutura do projeto segue uma arquiterura modular proveniente do NestJS, disposta em camadas. Cada camada encapsula diferentes responsabilidades como processamento de chamadas via API Web (_controllers_), regras de negócio (_services_), e acesso a dados (_repositories_). A integração com o Redis é implementada como um módulo separado, preservando responsabilidade única por módulo e facilitando testes e manutenção.
+A estrutura do projeto segue uma arquiterura modular proveniente do Framework NestJS, disposta em camadas. Cada camada encapsula diferentes responsabilidades como servir requisições HTTP (_controllers_), regras de negócio (_services_), e acesso a dados (_repositories_). A integração com o Redis é implementada como um módulo separado, preservando responsabilidade única por módulo e facilitando testes e manutenção.
 
 ## Tecnologias Utilizadas
 
-### Bancos de Dados
+### Banco de Dados
 - **Armazenamento Primário:** [SQLite](https://sqlite.org)
 - **Cache**: [Redis](https://redis.io)
 
@@ -81,7 +79,7 @@ Após o download, coloque o arquivo na pasta `./db/` e execute o script apropria
   ```
 </details>
 
-## Rodando o Servidor
+## Rodando a Aplicação
 
 Para rodar a aplicação em modo de desenvolvimento:
 
