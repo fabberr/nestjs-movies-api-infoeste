@@ -92,22 +92,22 @@ Este modo reinicia automaticamente a aplicação quando o código fonte for alte
 Caso todos os passos descritos nos [Pré-Requisitos](#pré-requisitos) tenham sido seguidos corretamente, a aplicação deve gerar uma saída semelhante à exibida abaixo no console durante sua inicialização:
 
 ```text/plain
-[8:08:30 PM] Starting compilation in watch mode...
+[TIMESTAMP] Starting compilation in watch mode...
 
-[8:08:31 PM] Found 0 errors. Watching for file changes.
+[TIMESTAMP] Found 0 errors. Watching for file changes.
 
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [NestFactory] Starting Nest application...
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [InstanceLoader] AppModule dependencies initialized +12ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +10ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [InstanceLoader] MoviesModule dependencies initialized +0ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [RoutesResolver] MoviesController {/api/movies}: +7ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [RouterExplorer] Mapped {/api/movies, GET} route +3ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [NestApplication] Nest application successfully started +1ms
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [Environment] DATASOURCE=./db/movies.sqlite3
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [Server] HTTP server listening on port 3000
-[Nest] 000000  - dd/MM/yyyy, hh:mm:ss PM     LOG [Server] API Reference (OpenAPI): http://localhost:3000/api/openapi
+[Nest] <PID>  - <TIMESTAMP>     LOG [NestFactory] Starting Nest application...
+[Nest] <PID>  - <TIMESTAMP>     LOG [InstanceLoader] AppModule dependencies initialized +12ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +10ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [InstanceLoader] MoviesModule dependencies initialized +0ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [RoutesResolver] MoviesController {/api/movies}: +7ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [RouterExplorer] Mapped {/api/movies, GET} route +3ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [NestApplication] Nest application successfully started +1ms
+[Nest] <PID>  - <TIMESTAMP>     LOG [Environment] DATASOURCE=./db/movies.sqlite3
+[Nest] <PID>  - <TIMESTAMP>     LOG [Server] HTTP server listening on port 3000
+[Nest] <PID>  - <TIMESTAMP>     LOG [Server] API Reference (OpenAPI): http://localhost:3000/docs
 ```
 
-Com o servidor rodando, é possível acessar a interface com a documentação da API em seu navegador através da URL http://localhost:3000/api/openapi.
+Com o servidor rodando, é possível acessar uma interface com a documentação da API em seu navegador através da URL: http://localhost:3000/docs

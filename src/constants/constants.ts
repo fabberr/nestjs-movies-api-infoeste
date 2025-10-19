@@ -9,6 +9,9 @@ export class Defaults {
 }
 
 export class Routes {
-  static readonly API_REFERENCE = '/api/openapi';
+  /** Documentation */
+  static readonly API_REFERENCE = '/docs';
+
+  /** Resources */
   static readonly MOVIES = '/api/movies';
 }
