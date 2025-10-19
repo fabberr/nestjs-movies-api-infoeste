@@ -2,54 +2,84 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Movie {
-  @PrimaryGeneratedColumn()
+  /** ID. */
+  @PrimaryGeneratedColumn({ name: 'Id', type: 'integer' })
   id: number;
 
-  @Column()
+  /** Título. */
+  @Column({ name: 'Title', type: 'varchar' })
   title: string;
 
-  @Column()
+  /** Gênero. */
+  @Column({
+    name: 'Genre',
+    type: 'simple-enum',
+    enum: [
+      'Drama',
+      'Action',
+      'Comedy',
+      'Thriller',
+      'Romance',
+      'Sci-Fi',
+      'Horror',
+      'Documentary',
+    ],
+  })
   genre: string;
 
-  @Column()
+  /** Ano de lançamento. */
+  @Column({ name: 'ReleaseYear', type: 'integer' })
   releaseYear: number;
 
-  @Column()
+  /** Data de lançamento, no formato ISO 8601 (yyyy-MM-dd). */
+  @Column({ name: 'ReleaseDate', type: 'date' })
   releaseDate: string;
 
-  @Column()
+  /** País de origem. */
+  @Column({ name: 'Country', type: 'varchar' })
   country: string;
 
-  @Column()
+  /** Orçamento, em dólares americanos (USD). */
+  @Column({ name: 'BudgetUsd', type: 'real', precision: 15, scale: 2 })
   budgetUsd: number;
 
-  @Column()
+  /** Bilheteria nos Estados Unidos, em dólares americanos (USD). */
+  @Column({ name: 'UsBoxOfficeUsd', type: 'real', precision: 15, scale: 2 })
   usBoxOfficeUsd: number;
 
-  @Column()
+  /** Bilheteria global, em dólares americanos (USD). */
+  @Column({ name: 'GlobalBoxOfficeUsd', type: 'real', precision: 15, scale: 2 })
   globalBoxOfficeUsd: number;
 
-  @Column()
+  /** Vendas no primeiro dia, em dólares americanos (USD). */
+  @Column({ name: 'OpeningDaySalesUsd', type: 'real', precision: 15, scale: 2 })
   openingDaySalesUsd: number;
 
-  @Column()
+  /** Vendas na primeira semana, em dólares americanos (USD). */
+  @Column({ name: 'OneWeekSalesUsd', type: 'real', precision: 15, scale: 2 })
   oneWeekSalesUsd: number;
 
-  @Column()
+  /** Avaliação no IMDb (0.0 - 10.0). */
+  @Column({ name: 'ImdbRating', type: 'real', precision: 3, scale: 1 })
   imdbRating: number;
 
-  @Column()
+  /** Avaliação no Rotten Tomatoes (0 - 100). */
+  @Column({ name: 'RottenTomatoesScore', type: 'integer' })
   rottenTomatoesScore: number;
 
-  @Column()
+  /** Quantidade de avaliações no IMDb. */
+  @Column({ name: 'NumVotesImdb', type: 'integer' })
   numVotesImdb: number;
 
-  @Column()
+  /** Quantidade de avaliações no Rotten Tomatoes. */
+  @Column({ name: 'NumVotesRottenTomatoes', type: 'integer' })
   numVotesRottenTomatoes: number;
 
-  @Column()
+  /** Nome do diretor. */
+  @Column({ name: 'Director', type: 'varchar' })
   director: string;
 
-  @Column()
+  /** Nome do ator principal. */
+  @Column({ name: 'LeadActor', type: 'varchar' })
   leadActor: string;
 }
