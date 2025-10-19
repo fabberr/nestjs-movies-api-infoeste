@@ -3,7 +3,7 @@
 CSV_FILE="${1:-./db/movies.csv}"
 DB_FILE="${2:-./db/movies.sqlite3}"
 
-TABLE_NAME="Movie"
+TABLE_NAME="Movies"
 
 if [[ ! -f "$CSV_FILE" ]]; then
   echo "[ERROR]"
@@ -26,22 +26,22 @@ echo "└── Importando dados do arquivo CSV: $(realpath $CSV_FILE)"
 sqlite3 "$DB_FILE" <<EOF
 CREATE TABLE '$TABLE_NAME' (
   Id                     INTEGER PRIMARY KEY,
-  Title                  TEXT NOT NULL,
-  Genre                  TEXT,
-  ReleaseYear            INTEGER,
-  ReleaseDate            TEXT,
-  Country                TEXT,
-  BudgetUsd              REAL,
-  UsBoxOfficeUsd         REAL,
-  GlobalBoxOfficeUsd     REAL,
-  OpeningDaySalesUsd     REAL,
-  OneWeekSalesUsd        REAL,
-  ImdbRating             REAL,
-  RottenTomatoesScore    INTEGER,
-  NumVotesImdb           INTEGER,
-  NumVotesRottenTomatoes INTEGER,
-  Director               TEXT,
-  LeadActor              TEXT
+  Title                  TEXT    NOT NULL,
+  Genre                  TEXT    NOT NULL,
+  ReleaseYear            INTEGER NOT NULL,
+  ReleaseDate            TEXT    NOT NULL,
+  Country                TEXT    NOT NULL,
+  BudgetUsd              REAL    NOT NULL,
+  UsBoxOfficeUsd         REAL    NOT NULL,
+  GlobalBoxOfficeUsd     REAL    NOT NULL,
+  OpeningDaySalesUsd     REAL    NOT NULL,
+  OneWeekSalesUsd        REAL    NOT NULL,
+  ImdbRating             REAL    NOT NULL,
+  RottenTomatoesScore    INTEGER NOT NULL,
+  NumVotesImdb           INTEGER NOT NULL,
+  NumVotesRottenTomatoes INTEGER NOT NULL,
+  Director               TEXT    NOT NULL,
+  LeadActor              TEXT    NOT NULL
 );
 
 .mode csv

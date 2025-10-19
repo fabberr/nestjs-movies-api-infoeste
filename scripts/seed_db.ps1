@@ -5,7 +5,7 @@ param(
     [string]$DbFile  = "./db/movies.sqlite3"
 )
 
-$TableName = "Movie"
+$TableName = "Movies"
 
 function RealPath([string]$Path) {
     try {
@@ -36,22 +36,22 @@ Write-Host ("└── Importando dados do arquivo CSV: " + (RealPath $CsvFile))
 $SqlCmd = @"
 CREATE TABLE '$TableName' (
   Id                     INTEGER PRIMARY KEY,
-  Title                  TEXT NOT NULL,
-  Genre                  TEXT,
-  ReleaseYear            INTEGER,
-  ReleaseDate            TEXT,
-  Country                TEXT,
-  BudgetUsd              REAL,
-  UsBoxOfficeUsd         REAL,
-  GlobalBoxOfficeUsd     REAL,
-  OpeningDaySalesUsd     REAL,
-  OneWeekSalesUsd        REAL,
-  ImdbRating             REAL,
-  RottenTomatoesScore    INTEGER,
-  NumVotesImdb           INTEGER,
-  NumVotesRottenTomatoes INTEGER,
-  Director               TEXT,
-  LeadActor              TEXT
+  Title                  TEXT    NOT NULL,
+  Genre                  TEXT    NOT NULL,
+  ReleaseYear            INTEGER NOT NULL,
+  ReleaseDate            TEXT    NOT NULL,
+  Country                TEXT    NOT NULL,
+  BudgetUsd              REAL    NOT NULL,
+  UsBoxOfficeUsd         REAL    NOT NULL,
+  GlobalBoxOfficeUsd     REAL    NOT NULL,
+  OpeningDaySalesUsd     REAL    NOT NULL,
+  OneWeekSalesUsd        REAL    NOT NULL,
+  ImdbRating             REAL    NOT NULL,
+  RottenTomatoesScore    INTEGER NOT NULL,
+  NumVotesImdb           INTEGER NOT NULL,
+  NumVotesRottenTomatoes INTEGER NOT NULL,
+  Director               TEXT    NOT NULL,
+  LeadActor              TEXT    NOT NULL
 );
 
 .mode csv

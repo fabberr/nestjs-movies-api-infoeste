@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'Movies' })
 export class Movie {
   /** ID. */
   @PrimaryGeneratedColumn({ name: 'Id', type: 'integer' })
@@ -31,7 +31,7 @@ export class Movie {
   @Column({ name: 'ReleaseYear', type: 'integer' })
   releaseYear: number;
 
-  /** Data de lançamento, no formato ISO 8601 (yyyy-MM-dd). */
+  /** Data de lançamento, no formato ISO 8601 (YYYY-MM-DD). */
   @Column({ name: 'ReleaseDate', type: 'date' })
   releaseDate: string;
 
