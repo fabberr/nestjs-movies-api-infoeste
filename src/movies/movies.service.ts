@@ -11,28 +11,34 @@ import { Movie } from './entities';
 export class MoviesService {
   constructor(private readonly moviesRepository: MoviesRepository) {}
 
-  findAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
-    return this.moviesRepository.findAsync(pageNumber, pageSize);
+  async findAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
+    return await this.moviesRepository.findAsync(pageNumber, pageSize);
   }
 
-  highestGrossingMoviesAsync(
+  async highestGrossingMoviesAsync(
     starting: string,
     ending: string,
   ): Promise<TopGrossingMovieView[]> {
-    return this.moviesRepository.highestGrossingMoviesAsync(starting, ending);
+    return await this.moviesRepository.highestGrossingMoviesAsync(
+      starting,
+      ending,
+    );
   }
 
-  genreSummaryAsync(
+  async genreSummaryAsync(
     starting: string,
     ending: string,
   ): Promise<GenreSummaryView[]> {
-    return this.moviesRepository.genreSummaryAsync(starting, ending);
+    return await this.moviesRepository.genreSummaryAsync(starting, ending);
   }
 
-  directorPerformanceAsync(
+  async directorPerformanceAsync(
     starting: string,
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
-    return this.moviesRepository.directorPerformanceAsync(starting, ending);
+    return await this.moviesRepository.directorPerformanceAsync(
+      starting,
+      ending,
+    );
   }
 }

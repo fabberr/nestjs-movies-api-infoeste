@@ -31,7 +31,7 @@ export class MoviesRepository {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
 
-    return this.database.find({
+    return await this.database.find({
       order: { releaseDate: 'desc' },
       skip: skip,
       take: take,
@@ -42,7 +42,7 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<TopGrossingMovieView[]> {
-    return this.database
+    return await this.database
       .createQueryBuilder(this.table)
       .select([
         `${this.table}.${this.columns.id} AS "id"`,
@@ -68,7 +68,7 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<GenreSummaryView[]> {
-    return this.database
+    return await this.database
       .createQueryBuilder(this.table)
       .select([
         `${this.table}.${this.columns.genre} AS "genre"`,
@@ -93,7 +93,7 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
-    return this.database
+    return await this.database
       .createQueryBuilder(this.table)
       .select([
         `${this.table}.${this.columns.director} AS "director"`,
