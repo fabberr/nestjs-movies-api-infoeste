@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MoviesModule } from './movies/movies.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Movie } from './movies/entities/movie.entity';
+import { Movie } from './movies/entities';
 
 @Module({
   imports: [

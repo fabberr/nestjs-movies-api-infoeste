@@ -1,23 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { Movie } from './entities/movie.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  TopGrossingMovieView,
+  GenreSummaryView,
+  DirectorPerformanceView,
+} from './views';
+import { MoviesRepository } from './movies.repository';
+import { Movie } from './entities';
 
 @Injectable()
 export class MoviesService {
-  constructor(
-    @InjectRepository(Movie)
-    private readonly movieRepository: Repository<Movie>,
-  ) {}
+  constructor(private readonly moviesRepository: MoviesRepository) {}
 
-  async findAllAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
-    const skip = (pageNumber - 1) * pageSize;
-    const take = pageSize;
+  findAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
+    return this.moviesRepository.findAsync(pageNumber, pageSize);
+  }
 
-    return await this.movieRepository.find({
-      order: { releaseDate: 'desc' },
-      skip: skip,
-      take: take,
-    });
+  highestGrossingMoviesAsync(
+    starting: string,
+    ending: string,
+  ): Promise<TopGrossingMovieView[]> {
+    return this.moviesRepository.highestGrossingMoviesAsync(starting, ending);
+  }
+
+  genreSummaryAsync(
+    starting: string,
+    ending: string,
+  ): Promise<GenreSummaryView[]> {
+    return this.moviesRepository.genreSummary(starting, ending);
+  }
+
+  directorPerformanceAsync(
+    starting: string,
+    ending: string,
+  ): Promise<DirectorPerformanceView[]> {
+    return this.moviesRepository.directorPerformance(starting, ending);
   }
 }
