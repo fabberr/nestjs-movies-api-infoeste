@@ -15,6 +15,7 @@ const logEnvironment = () => {
   const logger = new Logger('Environment');
 
   logger.log(`DATASOURCE=${process.env.DATASOURCE || Defaults.DATASOURCE}`);
+  logger.log(`THROTTLE_DATABASE=${process.env.THROTTLE_DATABASE || ''}`);
 };
 
 const logServerInfo = (app: NestExpressApplication) => {
