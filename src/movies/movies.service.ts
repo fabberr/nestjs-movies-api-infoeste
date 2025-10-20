@@ -26,13 +26,13 @@ export class MoviesService {
     starting: string,
     ending: string,
   ): Promise<GenreSummaryView[]> {
-    return this.moviesRepository.genreSummary(starting, ending);
+    return this.moviesRepository.genreSummaryAsync(starting, ending);
   }
 
   directorPerformanceAsync(
     starting: string,
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
-    return this.moviesRepository.directorPerformance(starting, ending);
+    return this.moviesRepository.directorPerformanceAsync(starting, ending);
   }
 }

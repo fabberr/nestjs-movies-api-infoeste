@@ -20,7 +20,10 @@ export class MoviesRepository {
     const metadata = this.database.manager.connection.getMetadata(Movie);
     this.table = metadata.tableName;
     this.columns = Object.fromEntries(
-      metadata.columns.map(column => [column.propertyName, column.databaseName])
+      metadata.columns.map((column) => [
+        column.propertyName,
+        column.databaseName,
+      ]),
     );
   }
 
@@ -50,15 +53,18 @@ export class MoviesRepository {
         `${this.table}.${this.columns.globalBoxOfficeUsd} / ${this.table}.${this.columns.budgetUsd} AS "returnOnInvestment"`,
         `${this.table}.${this.columns.openingDaySalesUsd} / ${this.table}.${this.columns.globalBoxOfficeUsd} AS "openingShare"`,
       ])
-      .where(`${this.table}.${this.columns.releaseDate} BETWEEN :starting AND :ending`, {
-        starting: starting,
-        ending: ending,
-      })
+      .where(
+        `${this.table}.${this.columns.releaseDate} BETWEEN :starting AND :ending`,
+        {
+          starting: starting,
+          ending: ending,
+        },
+      )
       .orderBy(`${this.table}.${this.columns.globalBoxOfficeUsd}`, 'DESC')
       .getRawMany<TopGrossingMovieView>();
   }
 
-  async genreSummary(
+  async genreSummaryAsync(
     starting: string,
     ending: string,
   ): Promise<GenreSummaryView[]> {
@@ -71,16 +77,19 @@ export class MoviesRepository {
         `AVG(${this.table}.${this.columns.globalBoxOfficeUsd}) AS "avgGlobalBoxOfficeUsd"`,
         `AVG(${this.table}.${this.columns.imdbRating}) AS "avgImdbRating"`,
       ])
-      .where(`${this.table}.${this.columns.releaseDate} BETWEEN :starting AND :ending`, {
-        starting: starting,
-        ending: ending,
-      })
+      .where(
+        `${this.table}.${this.columns.releaseDate} BETWEEN :starting AND :ending`,
+        {
+          starting: starting,
+          ending: ending,
+        },
+      )
       .groupBy(`${this.table}.${this.columns.genre}`)
       .orderBy('"movieCount"', 'DESC')
       .getRawMany<GenreSummaryView>();
   }
 
-  async directorPerformance(
+  async directorPerformanceAsync(
     starting: string,
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
@@ -92,10 +101,13 @@ export class MoviesRepository {
         `SUM(${this.table}.${this.columns.globalBoxOfficeUsd}) AS "totalGlobalBoxOfficeUsd"`,
         `AVG(${this.table}.${this.columns.imdbRating}) AS "avgImdbRating"`,
       ])
-      .where(`${this.table}.${this.columns.releaseDate} BETWEEN :starting AND :ending`, {
-        starting: starting,
-        ending: ending,
-      })
+      .where(
+        `${this.table}.${this.columns.releaseDate} BETWEEN :starting AND :ending`,
+        {
+          starting: starting,
+          ending: ending,
+        },
+      )
       .groupBy(`${this.table}.${this.columns.director}`)
       .orderBy('"totalGlobalBoxOfficeUsd"', 'DESC')
       .getRawMany<DirectorPerformanceView>();
