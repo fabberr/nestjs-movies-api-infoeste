@@ -8,8 +8,8 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "seed-db:powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File \"./scripts/seed_db.ps1\"",
-    "seed-db:pwsh": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"./scripts/seed_db.ps1\"",
+    "seed-db:powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File \"./scripts/seed_db_powershell.ps1\"",
+    "seed-db:pwsh": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"./scripts/seed_db_pwsh.ps1\"",
     "seed-db:bash": "bash ./scripts/seed_db.bash",
     "start": "cross-env DATASOURCE=$(node -e \"console.log(require('path').resolve('./db/movies.sqlite3'))\") nest start",
     "start:dev": "cross-env DATASOURCE=$(node -e \"console.log(require('path').resolve('./db/movies.sqlite3'))\") nest start --watch",

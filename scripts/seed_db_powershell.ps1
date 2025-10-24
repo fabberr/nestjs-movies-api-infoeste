@@ -1,6 +1,4 @@
-#!/usr/bin/env pwsh
-
-param(
+﻿param(
     [string]$CsvFile = "./db/movies.csv",
     [string]$DbFile  = "./db/movies.sqlite3"
 )
@@ -17,7 +15,7 @@ function RealPath([string]$Path) {
 
 if (-not (Test-Path $CsvFile)) {
     Write-Host "[ERROR]"
-    Write-Host "└── Arquivo CSV não encontrado: $CsvFile"
+    Write-Host ("└── Arquivo CSV não encontrado: " + $CsvFile)
     exit 1
 }
 
@@ -33,7 +31,8 @@ Write-Host "[INFO]"
 Write-Host ("├── Criando base de dados: " + (RealPath $DbFile))
 Write-Host ("└── Importando dados do arquivo CSV: " + (RealPath $CsvFile))
 
-$SqlCmd = @"
+$SqlFile = New-TemporaryFile
+Set-Content -Path $SqlFile -Value @"
 CREATE TABLE '$TableName' (
   Id                     INTEGER PRIMARY KEY,
   Title                  TEXT    NOT NULL,
@@ -58,10 +57,11 @@ CREATE TABLE '$TableName' (
 .import --skip 1 '$CsvFile' '$TableName'
 "@
 
-sqlite3 $DbFile $SqlCmd | Out-Null
+sqlite3 $DbFile ".read '$SqlFile'"
+Remove-Item $SqlFile
 
 $count = sqlite3 $DbFile "SELECT COUNT(*) FROM '$TableName';"
 
 Write-Host "[INFO]"
 Write-Host "├── Base de dados criada com sucesso!"
-Write-Host "└── $count registros importados para a tabela '$TableName'."
+Write-Host ("└── {0} registros importados para a tabela '{1}'." -f $count, $TableName)
