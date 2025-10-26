@@ -7,7 +7,6 @@ import {
   TopGrossingMovieView,
 } from './views';
 import { Movie } from './entities';
-import { sleepRandomSeconds } from 'src/common/common.utils';
 
 @Injectable()
 export class MoviesRepository {
@@ -29,10 +28,6 @@ export class MoviesRepository {
   }
 
   async findAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
-    if (process.env.THROTTLE_DATABASE) {
-      await sleepRandomSeconds();
-    }
-
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
 
@@ -47,10 +42,6 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<TopGrossingMovieView[]> {
-    if (process.env.THROTTLE_DATABASE) {
-      await sleepRandomSeconds();
-    }
-
     return await this.database
       .createQueryBuilder(this.table)
       .select([
@@ -77,10 +68,6 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<GenreSummaryView[]> {
-    if (process.env.THROTTLE_DATABASE) {
-      await sleepRandomSeconds();
-    }
-
     return await this.database
       .createQueryBuilder(this.table)
       .select([
@@ -106,10 +93,6 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
-    if (process.env.THROTTLE_DATABASE) {
-      await sleepRandomSeconds();
-    }
-
     return await this.database
       .createQueryBuilder(this.table)
       .select([
