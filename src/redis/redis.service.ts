@@ -85,4 +85,28 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async deleteObjectAsync(key: string): Promise<void> {
     await this.client.unlink(key);
   }
+
+  /**
+   * Remove todas as chaves que correspondem ao pattern informado.
+   *
+   * @see https://redis.io/docs/latest/commands/scan/
+   * @see https://redis.io/docs/latest/commands/unlink/
+   *
+   * @param pattern Pattern de busca.
+   */
+  async deleteByPatternAsync(pattern: string): Promise<void> {
+    const keysToDelete: string[] = [];
+
+    for await (const keys of this.client.scanIterator({ MATCH: pattern })) {
+      keysToDelete.push(...keys);
+    }
+
+    this.logger.debug(keysToDelete);
+
+    if (keysToDelete.length === 0) {
+      return;
+    }
+
+    await this.client.unlink(keysToDelete);
+  }
 }
