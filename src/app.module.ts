@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { MoviesModule } from './movies/movies.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Defaults } from './common/common.constants';
+import { CommonModule } from './common/common.module';
+import { MoviesModule } from './movies/movies.module';
 import { Movie } from './movies/entities';
-import { Defaults } from './constants/constants';
 
 @Module({
   imports: [
-    MoviesModule,
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: process.env.DATASOURCE || Defaults.DATASOURCE,
@@ -15,6 +15,8 @@ import { Defaults } from './constants/constants';
       entities: [Movie],
       logging: ['query'],
     }),
+    CommonModule,
+    MoviesModule,
   ],
 })
 export class AppModule {}

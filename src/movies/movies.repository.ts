@@ -7,7 +7,7 @@ import {
   TopGrossingMovieView,
 } from './views';
 import { Movie } from './entities';
-import { sleepRandomSeconds } from 'src/app.utils';
+import { sleepRandomSeconds } from 'src/common/common.utils';
 
 @Injectable()
 export class MoviesRepository {

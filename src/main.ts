@@ -5,7 +5,8 @@ import { apiReference } from '@scalar/nestjs-api-reference';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AddressInfo } from 'net';
 import { Logger } from '@nestjs/common';
-import { Defaults, Routes } from './constants/constants';
+import { Defaults, Routes } from './common/common.constants';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 const isAddressInfo = (address: unknown): address is AddressInfo => {
   return typeof address === 'object' && address !== null && 'port' in address;
@@ -15,7 +16,7 @@ const logEnvironment = () => {
   const logger = new Logger('Environment');
 
   logger.log(`DATASOURCE=${process.env.DATASOURCE || Defaults.DATASOURCE}`);
-  logger.log(`THROTTLE_DATABASE=${process.env.THROTTLE_DATABASE || ''}`);
+  logger.log(`THROTTLE_DATABASE=${process.env.THROTTLE_DATABASE || false}`);
 };
 
 const logServerInfo = (app: NestExpressApplication) => {
@@ -56,6 +57,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   await app.listen(process.env.PORT ?? Defaults.PORT, () => {
     logEnvironment();

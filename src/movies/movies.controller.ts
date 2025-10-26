@@ -1,6 +1,6 @@
 import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { Defaults, Routes } from 'src/constants/constants';
+import { Defaults, Routes } from 'src/common/common.constants';
 import {
   DirectorPerformanceDto,
   GenreSummaryDto,
