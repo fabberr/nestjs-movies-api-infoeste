@@ -83,7 +83,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * @param key Chave do objeto.
    */
   async deleteObjectAsync(key: string): Promise<void> {
-    await this.client.unlink(key);
+    const count = await this.client.unlink(key);
+
+    if (count > 0) {
+      this.logger.debug(`1 chave deletada: ${key}`);
+    }
   }
 
   /**
@@ -101,12 +105,15 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       keysToDelete.push(...keys);
     }
 
-    this.logger.debug(keysToDelete);
+    this.logger.debug(
+      `${keysToDelete.length} chaves para deletar: ${keysToDelete}`,
+    );
 
     if (keysToDelete.length === 0) {
       return;
     }
 
-    await this.client.unlink(keysToDelete);
+    const count = await this.client.unlink(keysToDelete);
+    this.logger.debug(`${count} chaves deletadas.`);
   }
 }
