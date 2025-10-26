@@ -1,4 +1,13 @@
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { Defaults, Routes } from 'src/common/common.constants';
 import {
@@ -7,21 +16,55 @@ import {
   MovieDto,
   TopGrossingMovieDto,
 } from './dtos';
+import { UpdateMovieDto } from './dtos/update-movie.dto';
 
 @Controller(Routes.MOVIES)
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
   @Get()
-  async findAsync(
+  async findAllAsync(
     @Query('pageNumber', ParseIntPipe) pageNumber?: number,
     @Query('pageSize', ParseIntPipe) pageSize?: number,
   ): Promise<MovieDto[]> {
     const _pageNumber = pageNumber || Defaults.PAGE_NUMBER;
     const _pageSize = pageSize || Defaults.PAGE_SIZE;
 
-    const result = await this.moviesService.findAsync(_pageNumber, _pageSize);
+    const result = await this.moviesService.findAllAsync(
+      _pageNumber,
+      _pageSize,
+    );
     return result.map(MovieDto.fromEntity);
+  }
+
+  @Get(':id')
+  async findByIdAsync(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<MovieDto> {
+    const movie = await this.moviesService.findByIdAsync(id);
+
+    if (movie === null) {
+      throw new NotFoundException();
+    }
+
+    return MovieDto.fromEntity(movie);
+  }
+
+  @Put(':id')
+  async updateMovieAsync(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateMovieDto,
+  ): Promise<MovieDto> {
+    const result = await this.moviesService.updateAsync(
+      id,
+      UpdateMovieDto.toEntity(dto),
+    );
+
+    if (result === null) {
+      throw new NotFoundException();
+    }
+
+    return MovieDto.fromEntity(result);
   }
 
   @Get('analytics/highest-grossing')

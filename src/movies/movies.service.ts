@@ -11,8 +11,24 @@ import { Movie } from './entities';
 export class MoviesService {
   constructor(private readonly moviesRepository: MoviesRepository) {}
 
-  async findAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
-    return await this.moviesRepository.findAsync(pageNumber, pageSize);
+  async findAllAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
+    return await this.moviesRepository.findAllAsync(pageNumber, pageSize);
+  }
+
+  async findByIdAsync(id: number): Promise<Movie | null> {
+    return await this.moviesRepository.findByIdAsync(id);
+  }
+
+  async updateAsync(id: number, movie: Movie): Promise<Movie | null> {
+    const currentMovie = await this.moviesRepository.findByIdAsync(id);
+
+    if (currentMovie === null) {
+      return null;
+    }
+
+    return await this.moviesRepository.updateAsync(
+      Movie.merge(currentMovie, movie),
+    );
   }
 
   async highestGrossingMoviesAsync(

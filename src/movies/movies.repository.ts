@@ -15,9 +15,9 @@ export class MoviesRepository {
 
   constructor(
     @InjectRepository(Movie)
-    private readonly database: Repository<Movie>,
+    private readonly movies: Repository<Movie>,
   ) {
-    const metadata = this.database.manager.connection.getMetadata(Movie);
+    const metadata = this.movies.manager.connection.getMetadata(Movie);
     this.table = metadata.tableName;
     this.columns = Object.fromEntries(
       metadata.columns.map((column) => [
@@ -27,22 +27,34 @@ export class MoviesRepository {
     );
   }
 
-  async findAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
+  merge(current: Movie, other: Movie): Movie {
+    return this.movies.merge(current, other);
+  }
+
+  async findAllAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
 
-    return await this.database.find({
-      order: { releaseDate: 'desc' },
+    return await this.movies.find({
+      order: { releaseDate: 'ASC' },
       skip: skip,
       take: take,
     });
+  }
+
+  async findByIdAsync(id: number): Promise<Movie | null> {
+    return await this.movies.findOneBy({ id: id });
+  }
+
+  async updateAsync(movie: Movie): Promise<Movie | null> {
+    return await this.movies.save(movie);
   }
 
   async highestGrossingMoviesAsync(
     starting: string,
     ending: string,
   ): Promise<TopGrossingMovieView[]> {
-    return await this.database
+    return await this.movies
       .createQueryBuilder(this.table)
       .select([
         `${this.table}.${this.columns.id} AS "id"`,
@@ -68,7 +80,7 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<GenreSummaryView[]> {
-    return await this.database
+    return await this.movies
       .createQueryBuilder(this.table)
       .select([
         `${this.table}.${this.columns.genre} AS "genre"`,
@@ -93,7 +105,7 @@ export class MoviesRepository {
     starting: string,
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
-    return await this.database
+    return await this.movies
       .createQueryBuilder(this.table)
       .select([
         `${this.table}.${this.columns.director} AS "director"`,
