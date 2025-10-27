@@ -14,12 +14,12 @@ export class MoviesService {
 
   constructor(
     private readonly moviesRepository: MoviesRepository,
-    private readonly redisService: RedisService
+    private readonly redisService: RedisService,
   ) {}
 
   async findAllAsync(pageNumber: number, pageSize: number): Promise<Movie[]> {
     const key = `movies:find_all:pageNumber=${pageNumber}:pageSize=${pageSize}`;
-    const ttlSeconds = (15 * 60); // 15 minutos
+    const ttlSeconds = 15 * 60; // 15 minutos
 
     const cachedMovies = await this.redisService.getObjectAsync<Movie[]>(key);
     if (cachedMovies !== null) {
@@ -28,7 +28,10 @@ export class MoviesService {
     }
     this.logger.debug(`Cache miss: key="${key}"`);
 
-    const movies = await this.moviesRepository.findAllAsync(pageNumber, pageSize);
+    const movies = await this.moviesRepository.findAllAsync(
+      pageNumber,
+      pageSize,
+    );
 
     await this.redisService.setObjectAsync<Movie[]>(key, movies, ttlSeconds);
 
@@ -37,7 +40,7 @@ export class MoviesService {
 
   async findByIdAsync(id: number): Promise<Movie | null> {
     const key: string = `movie:${id}`;
-    const ttlSeconds = (5 * 60); // 5 minutos
+    const ttlSeconds = 5 * 60; // 5 minutos
 
     const cachedMovie = await this.redisService.getObjectAsync<Movie>(key);
     if (cachedMovie !== null) {
@@ -84,9 +87,10 @@ export class MoviesService {
     ending: string,
   ): Promise<TopGrossingMovieView[]> {
     const key = `movies:analytics:highest_grossing:stating=${starting}:ending=${ending}`;
-    const ttlSeconds = (60 * 60); // 60 minutos
+    const ttlSeconds = 60 * 60; // 60 minutos
 
-    const cached = await this.redisService.getObjectAsync<TopGrossingMovieView[]>(key);
+    const cached =
+      await this.redisService.getObjectAsync<TopGrossingMovieView[]>(key);
     if (cached !== null) {
       this.logger.debug(`Cache hit: key="${key}"`);
       return cached;
@@ -95,10 +99,14 @@ export class MoviesService {
 
     const result = await this.moviesRepository.highestGrossingMoviesAsync(
       starting,
-      ending
+      ending,
     );
 
-    await this.redisService.setObjectAsync<TopGrossingMovieView[]>(key, result, ttlSeconds);
+    await this.redisService.setObjectAsync<TopGrossingMovieView[]>(
+      key,
+      result,
+      ttlSeconds,
+    );
 
     return result;
   }
@@ -108,18 +116,26 @@ export class MoviesService {
     ending: string,
   ): Promise<GenreSummaryView[]> {
     const key = `movies:analytics:genre_summary:stating=${starting}:ending=${ending}`;
-    const ttlSeconds = (60 * 60); // 60 minutos
+    const ttlSeconds = 60 * 60; // 60 minutos
 
-    const cached = await this.redisService.getObjectAsync<GenreSummaryView[]>(key);
+    const cached =
+      await this.redisService.getObjectAsync<GenreSummaryView[]>(key);
     if (cached !== null) {
       this.logger.debug(`Cache hit: key="${key}"`);
       return cached;
     }
     this.logger.debug(`Cache miss: key="${key}"`);
 
-    const result = await this.moviesRepository.genreSummaryAsync(starting, ending);
+    const result = await this.moviesRepository.genreSummaryAsync(
+      starting,
+      ending,
+    );
 
-    await this.redisService.setObjectAsync<GenreSummaryView[]>(key, result, ttlSeconds);
+    await this.redisService.setObjectAsync<GenreSummaryView[]>(
+      key,
+      result,
+      ttlSeconds,
+    );
 
     return result;
   }
@@ -129,9 +145,10 @@ export class MoviesService {
     ending: string,
   ): Promise<DirectorPerformanceView[]> {
     const key = `movies:analytics:director_performance:stating=${starting}:ending=${ending}`;
-    const ttlSeconds = (60 * 60); // 60 minutos
+    const ttlSeconds = 60 * 60; // 60 minutos
 
-    const cached = await this.redisService.getObjectAsync<DirectorPerformanceView[]>(key);
+    const cached =
+      await this.redisService.getObjectAsync<DirectorPerformanceView[]>(key);
     if (cached !== null) {
       this.logger.debug(`Cache hit: key="${key}"`);
       return cached;
@@ -140,10 +157,14 @@ export class MoviesService {
 
     const result = await this.moviesRepository.directorPerformanceAsync(
       starting,
-      ending
+      ending,
     );
 
-    await this.redisService.setObjectAsync<DirectorPerformanceView[]>(key, result, ttlSeconds);
+    await this.redisService.setObjectAsync<DirectorPerformanceView[]>(
+      key,
+      result,
+      ttlSeconds,
+    );
 
     return result;
   }
