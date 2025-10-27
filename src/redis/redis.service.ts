@@ -76,6 +76,24 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
+   * Atualiza um objeto armazenado no Redis pela sua chave. A chave especificada
+   * deve existir. O tempo de vida da chave será mantido.
+   *
+   * @see https://redis.io/docs/latest/commands/set/
+   *
+   * @param key Chave do objeto.
+   * @param value Objeto a atualizar.
+   */
+  async updateObjectAsync<T>(key: string, value: T): Promise<void> {
+    const json = JSON.stringify(value);
+
+    await this.client.set(key, json, {
+      expiration: { type: 'KEEPTTL' },
+      condition: 'XX',
+    });
+  }
+
+  /**
    * Remove um objeto armazenado no Redis pela sua chave.
    *
    * @see https://redis.io/docs/latest/commands/unlink/
@@ -91,7 +109,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Remove todas as chaves que correspondem ao pattern informado.
+   * Remove todas as chaves armazenadas no Redis que correspondem ao pattern
+   * informado.
    *
    * @see https://redis.io/docs/latest/commands/scan/
    * @see https://redis.io/docs/latest/commands/unlink/
