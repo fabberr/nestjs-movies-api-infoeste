@@ -63,9 +63,20 @@ export class MoviesService {
       return null;
     }
 
-    return await this.moviesRepository.updateAsync(
+    const updatedMovie = await this.moviesRepository.updateAsync(
       Movie.merge(currentMovie, movie),
     );
+
+    await this.redisService.updateObjectAsync<Movie>(
+      `movie:${id}`,
+      updatedMovie!,
+    );
+
+    // Como não temos como saber, de forma simples, quais consultas esta
+    // atualização pode afetar, invalidamos todas as chaves relacionadas.
+    await this.redisService.deleteByPatternAsync('movies:*');
+
+    return updatedMovie;
   }
 
   async highestGrossingMoviesAsync(
