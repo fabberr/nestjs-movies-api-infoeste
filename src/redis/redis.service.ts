@@ -139,18 +139,28 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Implementa o pattern lazy loading para um objeto.
+   * Implementa o padrão **lazy loading** (cache-aside) para um objeto ou coleção.
    *
-   * @param key Chave do objeto.
+   * O método tenta primeiro obter o valor associado à chave informada a partir
+   * do cache. Caso o valor exista (*cache hit*), ele é retornado imediatamente.
+   *
+   * Caso contrário (*cache miss*), a função `fetchFn` é chamada para buscar o
+   * valor. Se `fetchFn` retornar um valor não nulo, este será armazenado em
+   * cache com o TTL especificado (se informado) antes de ser retornado.
+   *
+   * @template T Tipo do objeto ou coleção a ser armazenado em cache.
+   *
+   * @param key Chave única do objeto em cache.
+   *
+   * @param fetchFn Função de callback chamada quando o valor não está presente no cache.
+   *        Deve retornar o valor a ser armazenado (por exemplo, uma entidade ou lista),
+   *        ou `null` se não houver dados disponíveis.
    *
    * @param ttlSeconds (Opcional) Tempo de vida (TTL) do objeto, em segundos.
-   *        Se não especificao, o objeto será armazenado indefinidamente.
+   *        Se não especificado, o valor será armazenado indefinidamente.
    *
-   * @param fetchFn Callback que será chamado caso o bjeto não esteja present em
-   *        cache (cache miss). Usado para obter o valor a ser armazenado.
-   *
-   * @returns O valor do objeto armazenado em cache, caso contrário, o valor do
-   *          objeto retornado por `fetchFn`.
+   * @returns O valor obtido do cache ou, em caso de cache miss, o valor retornado por `fetchFn`.  
+   *          Retorna `null` se ambos (cache e `fetchFn`) não produzirem resultado.
    */
   async lazyLoadAsync<T>(
     key: string,
