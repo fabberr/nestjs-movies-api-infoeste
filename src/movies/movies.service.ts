@@ -39,24 +39,14 @@ export class MoviesService {
   }
 
   async findByIdAsync(id: number): Promise<Movie | null> {
-    const key: string = `movie:${id}`;
-    const ttlSeconds = 5 * 60; // 5 minutos
+    const key = `movie:${id}`;
+    const ttlSeconds = 5 * 60;
 
-    const cachedMovie = await this.redisService.getObjectAsync<Movie>(key);
-    if (cachedMovie !== null) {
-      this.logger.debug(`Cache hit: key="${key}"`);
-      return cachedMovie;
-    }
-    this.logger.debug(`Cache miss: key="${key}"`);
-
-    const movie = await this.moviesRepository.findByIdAsync(id);
-
-    if (movie === null) {
-      return null;
-    }
-
-    await this.redisService.setObjectAsync<Movie>(key, movie, ttlSeconds);
-    return movie;
+    return await this.redisService.lazyLoadAsync<Movie | null>(
+      key,
+      () => this.moviesRepository.findByIdAsync(id),
+      ttlSeconds,
+    );
   }
 
   async updateAsync(id: number, movie: Movie): Promise<Movie | null> {
@@ -89,26 +79,15 @@ export class MoviesService {
     const key = `movies:analytics:highest_grossing:stating=${starting}:ending=${ending}`;
     const ttlSeconds = 60 * 60; // 60 minutos
 
-    const cached =
-      await this.redisService.getObjectAsync<TopGrossingMovieView[]>(key);
-    if (cached !== null) {
-      this.logger.debug(`Cache hit: key="${key}"`);
-      return cached;
-    }
-    this.logger.debug(`Cache miss: key="${key}"`);
-
-    const result = await this.moviesRepository.highestGrossingMoviesAsync(
-      starting,
-      ending,
-    );
-
-    await this.redisService.setObjectAsync<TopGrossingMovieView[]>(
+    const result = await this.redisService.lazyLoadAsync<
+      TopGrossingMovieView[]
+    >(
       key,
-      result,
+      () => this.moviesRepository.highestGrossingMoviesAsync(starting, ending),
       ttlSeconds,
     );
 
-    return result;
+    return result ?? [];
   }
 
   async genreSummaryAsync(
@@ -118,26 +97,13 @@ export class MoviesService {
     const key = `movies:analytics:genre_summary:stating=${starting}:ending=${ending}`;
     const ttlSeconds = 60 * 60; // 60 minutos
 
-    const cached =
-      await this.redisService.getObjectAsync<GenreSummaryView[]>(key);
-    if (cached !== null) {
-      this.logger.debug(`Cache hit: key="${key}"`);
-      return cached;
-    }
-    this.logger.debug(`Cache miss: key="${key}"`);
-
-    const result = await this.moviesRepository.genreSummaryAsync(
-      starting,
-      ending,
-    );
-
-    await this.redisService.setObjectAsync<GenreSummaryView[]>(
+    const result = await this.redisService.lazyLoadAsync(
       key,
-      result,
+      () => this.moviesRepository.genreSummaryAsync(starting, ending),
       ttlSeconds,
     );
 
-    return result;
+    return result ?? [];
   }
 
   async directorPerformanceAsync(
@@ -147,25 +113,12 @@ export class MoviesService {
     const key = `movies:analytics:director_performance:stating=${starting}:ending=${ending}`;
     const ttlSeconds = 60 * 60; // 60 minutos
 
-    const cached =
-      await this.redisService.getObjectAsync<DirectorPerformanceView[]>(key);
-    if (cached !== null) {
-      this.logger.debug(`Cache hit: key="${key}"`);
-      return cached;
-    }
-    this.logger.debug(`Cache miss: key="${key}"`);
-
-    const result = await this.moviesRepository.directorPerformanceAsync(
-      starting,
-      ending,
-    );
-
-    await this.redisService.setObjectAsync<DirectorPerformanceView[]>(
+    const result = await this.redisService.lazyLoadAsync(
       key,
-      result,
+      () => this.moviesRepository.directorPerformanceAsync(starting, ending),
       ttlSeconds,
     );
 
-    return result;
+    return result ?? [];
   }
 }

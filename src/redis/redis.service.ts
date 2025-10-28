@@ -37,6 +37,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * @see https://redis.io/docs/latest/commands/get/
    *
    * @param key Chave do objeto.
+   *
+   * @return O objeto armazenado em cache.
    */
   async getObjectAsync<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
@@ -134,5 +136,42 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
     const count = await this.client.unlink(keysToDelete);
     this.logger.debug(`${count} chaves deletadas.`);
+  }
+
+  /**
+   * Implementa o pattern lazy loading para um objeto.
+   *
+   * @param key Chave do objeto.
+   *
+   * @param ttlSeconds (Opcional) Tempo de vida (TTL) do objeto, em segundos.
+   *        Se não especificao, o objeto será armazenado indefinidamente.
+   *
+   * @param fetchFn Callback que será chamado caso o bjeto não esteja present em
+   *        cache (cache miss). Usado para obter o valor a ser armazenado.
+   *
+   * @returns O valor do objeto armazenado em cache, caso contrário, o valor do
+   *          objeto retornado por `fetchFn`.
+   */
+  async lazyLoadAsync<T>(
+    key: string,
+    fetchFn: () => Promise<T>,
+    ttlSeconds?: number,
+  ): Promise<T | null> {
+    const cachedValue = await this.getObjectAsync<T>(key);
+    if (cachedValue !== null) {
+      this.logger.debug(`Cache hit: key="${key}"`);
+      return cachedValue;
+    }
+
+    this.logger.debug(`Cache miss: key="${key}"`);
+
+    const value = await fetchFn();
+
+    if (value === null) {
+      return null;
+    }
+
+    await this.setObjectAsync<T>(key, value, ttlSeconds);
+    return value;
   }
 }
