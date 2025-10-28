@@ -37,6 +37,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * @see https://redis.io/docs/latest/commands/get/
    *
    * @param key Chave do objeto.
+   *
+   * @return O objeto armazenado em cache.
    */
   async getObjectAsync<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
@@ -134,5 +136,52 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
     const count = await this.client.unlink(keysToDelete);
     this.logger.debug(`${count} chaves deletadas.`);
+  }
+
+  /**
+   * Implementa o padrão **lazy loading** (cache-aside) para um objeto ou coleção.
+   *
+   * O método tenta primeiro obter o valor associado à chave informada a partir
+   * do cache. Caso o valor exista (*cache hit*), ele é retornado imediatamente.
+   *
+   * Caso contrário (*cache miss*), a função `fetchFn` é chamada para buscar o
+   * valor. Se `fetchFn` retornar um valor não nulo, este será armazenado em
+   * cache com o TTL especificado (se informado) antes de ser retornado.
+   *
+   * @template T Tipo do objeto ou coleção a ser armazenado em cache.
+   *
+   * @param key Chave única do objeto em cache.
+   *
+   * @param fetchFn Função de callback chamada quando o valor não está presente no cache.
+   *        Deve retornar o valor a ser armazenado (por exemplo, uma entidade ou lista),
+   *        ou `null` se não houver dados disponíveis.
+   *
+   * @param ttlSeconds (Opcional) Tempo de vida (TTL) do objeto, em segundos.
+   *        Se não especificado, o valor será armazenado indefinidamente.
+   *
+   * @returns O valor obtido do cache ou, em caso de cache miss, o valor retornado por `fetchFn`.  
+   *          Retorna `null` se ambos (cache e `fetchFn`) não produzirem resultado.
+   */
+  async lazyLoadAsync<T>(
+    key: string,
+    fetchFn: () => Promise<T>,
+    ttlSeconds?: number,
+  ): Promise<T | null> {
+    const cachedValue = await this.getObjectAsync<T>(key);
+    if (cachedValue !== null) {
+      this.logger.debug(`Cache hit: key="${key}"`);
+      return cachedValue;
+    }
+
+    this.logger.debug(`Cache miss: key="${key}"`);
+
+    const value = await fetchFn();
+
+    if (value === null) {
+      return null;
+    }
+
+    await this.setObjectAsync<T>(key, value, ttlSeconds);
+    return value;
   }
 }
